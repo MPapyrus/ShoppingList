@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
             val intent = newIntentAddItem(this)
             startActivity(intent)
         }
+
     }
 
     private fun setupRecyclerView() {

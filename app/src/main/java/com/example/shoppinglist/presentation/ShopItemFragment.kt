@@ -11,15 +11,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.presentation.ShopItemActivity.Companion
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment(
-    private val shopItemID: Int = ShopItem.UNDEFINED_ID,
-    private val screenMode: String = MODE_UNKNOWN
+    private val screenMode: String = MODE_UNKNOWN,
+    private val shopItemID: Int = ShopItem.UNDEFINED_ID
 ) : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
@@ -77,7 +77,7 @@ class ShopItemFragment(
         })
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            finish()
+            requireActivity().onBackPressed()
         }
     }
 
@@ -150,8 +150,15 @@ class ShopItemFragment(
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
-
         private const val MODE_UNKNOWN = ""
+
+        fun newInstanceAddItem(): ShopItemFragment {
+            return ShopItemFragment(MODE_ADD)
+        }
+
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
+            return ShopItemFragment(MODE_EDIT, shopItemId)
+        }
 
         fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
