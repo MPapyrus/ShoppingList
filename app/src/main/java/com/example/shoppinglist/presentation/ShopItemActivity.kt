@@ -17,7 +17,7 @@ import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.presentation.ShopItemFragment.Companion
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
@@ -70,6 +70,10 @@ class ShopItemActivity : AppCompatActivity() {
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
 
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 
     companion object {
