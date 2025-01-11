@@ -2,21 +2,17 @@ package com.example.shoppinglist.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
+import com.example.shoppinglist.databinding.ItemShopDisabledBinding
+import com.example.shoppinglist.databinding.ItemShopEnabledBinding
 import com.example.shoppinglist.domain.ShopItem
 
 // ListAdapter, потому что он в DiffUtil он создает новый поток в отличие от RecyclerView в которым DiffUtil запускается в основном потоке
 class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallBack()) {
 
-//    var count = 0
-//    var shopList = listOf<ShopItem>()
-//        set(value) {
-//            val callback = ShopListDiffCallBack(shopList, value)
-//            val diffResult = DiffUtil.calculateDiff(callback)
-//            diffResult.dispatchUpdatesTo(this)
-//            field = value
-//        }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
@@ -28,37 +24,49 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCa
             else -> throw RuntimeException("Unknown view type: $viewType")
         }
 
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
+            layout,
+            parent,
+            false
+        )
 
-        return ShopItemViewHolder(view)
+        return ShopItemViewHolder(binding)
 
     }
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
-//        Log.d("onBindViewHolder", "Created view: ${++count}")
         val shopItem = getItem(position)
 
-        viewHolder.itemView.setOnLongClickListener {
+        val binding = viewHolder.binding
+
+        binding.root.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
             true
         }
 
-        viewHolder.itemView.setOnClickListener {
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)
-            true
         }
 
-        viewHolder.tvName.text = shopItem.name
-        viewHolder.tvCount.text = shopItem.count.toString()
+        when (binding) {
+            is ItemShopDisabledBinding -> {
+                binding.shopItem = shopItem
+            }
+
+            is ItemShopEnabledBinding -> {
+                binding.shopItem = shopItem
+            }
+        }
 
     }
 
     override fun getItemViewType(position: Int): Int {
         val shopItem = getItem(position)
         return if (shopItem.enabled) {
-            return VIEW_TYPE_ENABLED
+            VIEW_TYPE_ENABLED
         } else {
-            return VIEW_TYPE_DISABLED
+            VIEW_TYPE_DISABLED
         }
     }
 
