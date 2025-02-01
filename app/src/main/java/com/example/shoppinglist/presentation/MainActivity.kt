@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.databinding.ActivityMainBinding
-import com.example.shoppinglist.presentation.ShopItemActivity.Companion.newIntentAddItem
-import com.example.shoppinglist.presentation.ShopItemActivity.Companion.newIntentEditItem
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
@@ -31,15 +29,13 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         }
 
         binding.buttonAddShopItem.setOnClickListener {
-            if(isOnePaneMode()){
-                val intent = newIntentAddItem(this)
+            if (isOnePaneMode()) {
+                val intent = ShopItemActivity.newIntentAddItem(this)
                 startActivity(intent)
-            }
-            else {
+            } else {
                 launchFragment(ShopItemFragment.newInstanceAddItem())
             }
         }
-
     }
 
     override fun onEditingFinished() {
@@ -47,11 +43,11 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         supportFragmentManager.popBackStack()
     }
 
-    private fun isOnePaneMode(): Boolean{
+    private fun isOnePaneMode(): Boolean {
         return binding.shopItemContainer == null
     }
 
-    private fun launchFragment(fragment: Fragment){
+    private fun launchFragment(fragment: Fragment) {
         supportFragmentManager.popBackStack()
         supportFragmentManager.beginTransaction()
             .replace(R.id.shop_item_container, fragment)
@@ -82,11 +78,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
 
     private fun setupSwipeListener(rvShopList: RecyclerView?) {
         val callback = object :
-            ItemTouchHelper.SimpleCallback(
-                0,
-                ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
-            ) {
-
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -107,11 +99,10 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            if(isOnePaneMode()){
-                val intent = newIntentEditItem(this, it.id)
+            if (isOnePaneMode()) {
+                val intent = ShopItemActivity.newIntentEditItem(this, it.id)
                 startActivity(intent)
-            }
-            else {
+            } else {
                 launchFragment(ShopItemFragment.newInstanceEditItem(it.id))
             }
         }
@@ -122,5 +113,4 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
             viewModel.changeEnabledState(it)
         }
     }
-
 }

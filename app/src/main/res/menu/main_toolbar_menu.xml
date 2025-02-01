@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_find"
+        android:icon="@drawable/baseline_find_in_page_24"
+        app:showAsAction="always"
+        android:title="find"
+        />
+
+    <item
+        android:id="@+id/action_fitler"
+        android:icon="@drawable/baseline_filter_alt_24"
+        app:showAsAction="always"
+        android:title="filer"/>
+
+    <item
+        android:id="@+id/action_clear"
+        android:icon="@drawable/baseline_delete_24"
+        app:showAsAction="always"
+        android:title="delete"/>
+
+</menu>
