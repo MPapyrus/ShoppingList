@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
 import com.example.shoppinglist.databinding.FragmentShopItemBinding
+import com.example.shoppinglist.di.DaggerApplicationComponent
 import com.example.shoppinglist.domain.ShopItem
+import javax.inject.Inject
 
 class ShopItemFragment: Fragment() {
 
@@ -23,10 +25,19 @@ class ShopItemFragment: Fragment() {
     private lateinit var viewModel: ShopItemViewModel
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
+    private val component by lazy {
+        (requireActivity().application as ShopListApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
     override fun onAttach(context: Context) {
+        component.inject(this)
+
         super.onAttach(context)
         Log.d("ShopItemFragmentTEST", "onAttach")
         if (context is OnEditingFinishedListener) {
@@ -58,7 +69,7 @@ class ShopItemFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ShopItemFragmentTEST", "onViewCreated")
 
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[ShopItemViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         launchRightMode()
