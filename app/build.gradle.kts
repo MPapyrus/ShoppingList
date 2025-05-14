@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
     kapt(libs.room.compiler)
 
 
