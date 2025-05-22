@@ -83,7 +83,17 @@ class ShopListProvider: ContentProvider() {
     }
 
     override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        val code = uriMatcher.match(p0)
+
+        when (code) {
+            GET_SHOP_ITEMS_QUERY -> {
+                val id = p2?.get(0)?.toInt() ?: -1
+
+                return shopListDao.deleteShopItemSync(id)
+            }
+        }
+
+        return 0
     }
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
