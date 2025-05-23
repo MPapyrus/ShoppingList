@@ -11,7 +11,7 @@ import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.presentation.ShopListApp
 import javax.inject.Inject
 
-class ShopListProvider: ContentProvider() {
+class ShopListProvider : ContentProvider() {
 
     private val component by lazy {
         (context as ShopListApp).component
@@ -26,7 +26,6 @@ class ShopListProvider: ContentProvider() {
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
         addURI("com.example.shoppinglist", "shop_items", GET_SHOP_ITEMS_QUERY)
         addURI("com.example.shoppinglist", "shop_items/#", GET_SHOP_ITEM_BY_ID_QUERY)
-
     }
 
     override fun onCreate(): Boolean {
@@ -43,10 +42,11 @@ class ShopListProvider: ContentProvider() {
     ): Cursor? {
         val code = uriMatcher.match(p0)
 
-        return when(code){
+        return when (code) {
             GET_SHOP_ITEMS_QUERY -> {
                 shopListDao.getShopListCursor()
             }
+
             else -> {
                 null
             }
@@ -97,13 +97,37 @@ class ShopListProvider: ContentProvider() {
     }
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        val code = uriMatcher.match(p0)
+
+        when (code) {
+            GET_SHOP_ITEM_BY_ID_QUERY -> {
+                if (p1 == null) return 0
+
+                val id = p0.lastPathSegment?.toIntOrNull() ?: return 0
+                val name = p1.getAsString("name") ?: return 0
+                val count = p1.getAsInteger("count") ?: return 0
+                val enabled = p1.getAsBoolean("enabled") ?: true
+
+                val shopItem = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+
+                shopListDao.addShopItemSync(mapper.mapEntityToDbModel(shopItem))
+                return 1
+            }
+
+        }
+        return 0
     }
 
     companion object {
 
         const val GET_SHOP_ITEMS_QUERY = 100
         const val GET_SHOP_ITEM_BY_ID_QUERY = 101
+
     }
 
 
